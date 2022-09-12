@@ -294,6 +294,10 @@ def row_to_schema(schema, row):
 
             # add value's schema to anyOf list
             changed = add_to_any_of(anyof_schema, value) or changed
+        else:
+            if not schema.get('properties', {}).get(field):
+                schema['properties'][field] = {'type': ['string','null']}
+
 
     return changed
 
