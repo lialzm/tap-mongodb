@@ -116,8 +116,7 @@ def safe_transform_datetime(value, path):
         # raise MongoInvalidDateTimeException("Found invalid datetime at [{}]: {}".format(
         #     ".".join(map(str, path)),
         #     value)) from ex
-        local_datetime = timezone.localize('1900-01-01 00:00:00')
-        utc_datetime = local_datetime.astimezone(pytz.UTC)
+        return None
     return utils.strftime(utc_datetime)
 
 # pylint: disable=too-many-return-statements,too-many-branches
@@ -293,7 +292,7 @@ def row_to_schema(schema, row):
             if not schema.get('properties', {}).get(field):
                 schema['properties'][field] = {'anyOf': [{}]}
                 # schema['properties'][field] = {'type': ['string','null']}
-            anyof_schema = schema['properties'][field]
+            anyof_schema = schema['properties'][field]['anyOf']
 
             # add value's schema to anyOf list
             changed = add_to_any_of(anyof_schema, value) or changed
