@@ -116,7 +116,8 @@ def safe_transform_datetime(value, path):
         # raise MongoInvalidDateTimeException("Found invalid datetime at [{}]: {}".format(
         #     ".".join(map(str, path)),
         #     value)) from ex
-        return None
+        local_datetime = timezone.localize('1900-01-01 00:00:00')
+        utc_datetime = local_datetime.astimezone(pytz.UTC)
     return utils.strftime(utc_datetime)
 
 # pylint: disable=too-many-return-statements,too-many-branches
