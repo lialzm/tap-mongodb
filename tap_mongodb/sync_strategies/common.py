@@ -113,9 +113,10 @@ def safe_transform_datetime(value, path):
                                                                               value.minute,
                                                                               value.second,
                                                                               value.microsecond)
-        raise MongoInvalidDateTimeException("Found invalid datetime at [{}]: {}".format(
-            ".".join(map(str, path)),
-            value)) from ex
+        # raise MongoInvalidDateTimeException("Found invalid datetime at [{}]: {}".format(
+        #     ".".join(map(str, path)),
+        #     value)) from ex
+        return None
     return utils.strftime(utc_datetime)
 
 # pylint: disable=too-many-return-statements,too-many-branches
@@ -290,7 +291,8 @@ def row_to_schema(schema, row):
             # get pointer to field's anyOf list
             if not schema.get('properties', {}).get(field):
                 schema['properties'][field] = {'anyOf': [{}]}
-            anyof_schema = schema['properties'][field]['anyOf']
+                # schema['properties'][field] = {'type': ['string','null']}
+            anyof_schema = schema['properties'][field]
 
             # add value's schema to anyOf list
             changed = add_to_any_of(anyof_schema, value) or changed
