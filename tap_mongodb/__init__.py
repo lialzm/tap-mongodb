@@ -168,7 +168,7 @@ def produce_collection_schema(collection):
                 },
                 "_sdc_deleted_at": {
                     "type": [
-                        "date-time",
+                        "string",
                         "null"
                     ]
                 },
