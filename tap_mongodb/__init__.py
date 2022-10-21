@@ -168,7 +168,7 @@ def produce_collection_schema(collection):
                 },
                 "_sdc_deleted_at": {
                     "type": [
-                        "timestamp without time zone",
+                        "date-time",
                         "null"
                     ]
                 },
