@@ -158,6 +158,17 @@ def produce_collection_schema(collection):
                 "_id": {
                     "type": ["string", "null"]
                 },
+                "name":{
+                    "type": ["string", "null"]
+                },
+                "interests":{
+                    "type": [
+                        "object",
+                        "array",
+                        "string",
+                        "null"
+                    ]
+                },
                 "document": {
                     "type": [
                         "object",
