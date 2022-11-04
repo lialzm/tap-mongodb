@@ -178,6 +178,8 @@ def row_to_singer_record(stream, row, version, time_extracted):
             row_to_persist_orige = {k:transform_value(v, [k]) for k, v in row.items()
                             if type(v) not in [bson.min_key.MinKey, bson.max_key.MaxKey]}
             row_to_persist = {'_id':row_to_persist_orige['_id'],'document':row_to_persist_orige}
+            if '_sdc_deleted_at' in row_to_persist_orige:
+                row_to_persist['_sdc_deleted_at']=row_to_persist_orige['_sdc_deleted_at']
         else:
             row_to_persist = {k:transform_value(v, [k]) for k, v in row.items()
                             if type(v) not in [bson.min_key.MinKey, bson.max_key.MaxKey]}
