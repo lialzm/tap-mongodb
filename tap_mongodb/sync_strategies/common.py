@@ -39,6 +39,10 @@ def calculate_destination_stream_name(stream):
 
     return stream['stream']
 
+def is_document_model(stream):
+    s_md = metadata.to_map(stream['metadata'])
+    return s_md.get((), {}).get('model')=='document'
+
 def whitelist_bookmark_keys(bookmark_key_set, tap_stream_id, state):
     for bookmark_key in [non_whitelisted_bookmark_key
                          for non_whitelisted_bookmark_key
@@ -276,8 +280,20 @@ def add_to_any_of(schema, value):
             schema.insert(-1, list_schema)
     return changed
 
-def row_to_schema(schema, row):
+def row_to_schema(schema, row,stream=None):
     changed = False
+    if stream is not None and is_document_model(stream):
+        if 'document' not in schema['properties']:
+            schema['properties']['document']={
+                        "type": [
+                            "object",
+                            "array",
+                            "string",
+                            "null"
+                        ]
+                    }
+            changed=True
+        return changed
 
     for field, value in row.items():
         if isinstance(value, (bson_datetime.datetime,
@@ -290,9 +306,16 @@ def row_to_schema(schema, row):
 
             # get pointer to field's anyOf list
             if not schema.get('properties', {}).get(field):
-                schema['properties'][field] = {'anyOf': [{}]}
+                schema['properties'][field] = {'anyOf': [{"type": [
+                        "object",
+                        "array",
+                        "string",
+                        "null"
+                    ]}]}
                 # schema['properties'][field] = {'type': ['string','null']}
-            anyof_schema = schema['properties'][field]['anyOf']
+                anyof_schema = schema['properties'][field]['anyOf']
+            else:
+                anyof_schema = [schema['properties'][field]]
 
             # add value's schema to anyOf list
             changed = add_to_any_of(anyof_schema, value) or changed

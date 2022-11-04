@@ -238,9 +238,6 @@ def get_streams_to_sync(streams, state):
 
 
 def write_schema_message(stream):
-    LOGGER.info('====write_schema_message')
-    LOGGER.info(stream)
-    LOGGER.info('====write_schema_message')
     singer.write_message(singer.SchemaMessage(
         stream=common.calculate_destination_stream_name(stream),
         schema=stream['schema'],

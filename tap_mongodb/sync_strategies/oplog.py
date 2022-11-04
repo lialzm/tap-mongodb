@@ -48,7 +48,7 @@ def update_bookmarks(state, tap_stream_id, ts):
 
 def write_schema(schema, row, stream):
     schema_build_start_time = time.time()
-    if common.row_to_schema(schema, row):
+    if common.row_to_schema(schema, row,stream):
         singer.write_message(singer.SchemaMessage(
             stream=common.calculate_destination_stream_name(stream),
             schema=schema,
