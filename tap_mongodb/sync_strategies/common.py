@@ -174,8 +174,13 @@ def transform_value(value, path):
 def row_to_singer_record(stream, row, version, time_extracted):
     # pylint: disable=unidiomatic-typecheck
     try:
-        row_to_persist = {k:transform_value(v, [k]) for k, v in row.items()
-                          if type(v) not in [bson.min_key.MinKey, bson.max_key.MaxKey]}
+        if is_document_model(stream):
+            row_to_persist_orige = {k:transform_value(v, [k]) for k, v in row.items()
+                            if type(v) not in [bson.min_key.MinKey, bson.max_key.MaxKey]}
+            row_to_persist = {'_id':row_to_persist_orige['_id'],'document':row_to_persist_orige}
+        else:
+            row_to_persist = {k:transform_value(v, [k]) for k, v in row.items()
+                            if type(v) not in [bson.min_key.MinKey, bson.max_key.MaxKey]}
     except MongoInvalidDateTimeException as ex:
         raise Exception("Error syncing collection {}, object ID {} - {}".format(stream["tap_stream_id"], row['_id'], ex)) from ex
 
@@ -291,6 +296,11 @@ def row_to_schema(schema, row,stream=None):
                             "string",
                             "null"
                         ]
+                    }
+            changed=True
+        if '_id' not in schema['properties']:
+            schema['properties']['_id']={
+                        "type": ['string','null']
                     }
             changed=True
         return changed
