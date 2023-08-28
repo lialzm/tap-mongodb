@@ -61,7 +61,7 @@ def get_stream_version(tap_stream_id, state):
 
 def class_to_string(bookmark_value, bookmark_type):
     if bookmark_type == 'datetime':
-        timezone = tzlocal.get_localzone()
+        timezone = pytz.timezone('UTC')
         local_datetime = timezone.localize(bookmark_value)
         utc_datetime = local_datetime.astimezone(pytz.UTC)
         return utils.strftime(utc_datetime)
@@ -100,7 +100,7 @@ def string_to_class(str_value, type_value):
                                                  .format(type_value))
 
 def safe_transform_datetime(value, path):
-    timezone = tzlocal.get_localzone()
+    timezone = pytz.timezone('UTC')
     try:
         local_datetime = timezone.localize(value)
         utc_datetime = local_datetime.astimezone(pytz.UTC)
@@ -144,7 +144,7 @@ def transform_value(value, path):
         # Return the original base64 encoded string
         return base64.b64encode(value).decode('utf-8')
     if isinstance(value, datetime.datetime):
-        timezone = tzlocal.get_localzone()
+        timezone = pytz.timezone('UTC')
         local_datetime = timezone.localize(value)
         utc_datetime = local_datetime.astimezone(pytz.UTC)
         return utils.strftime(utc_datetime)
